@@ -38,7 +38,7 @@ ephi_state <- read_csv("ephi_state.csv") %>%
 
 ## Tables
 
-### Table 1: New UI claims and EPHI losses for the six weeks during March 15 - April 25, by industry
+### Table 1: New UI claims and employer-provided health insurance losses between March 15 and April 25, by industry
 ```{r us_claims}
 datatable(
   ephi_industry,
@@ -64,7 +64,7 @@ datatable(
 ```
 Source: Authors' analysis of state-level [UI claims](https://economic.github.io/ui_state_detailed/), US Department of Labor [UI Claims](https://www.dol.gov/ui/data.pdf), Quarterly Census of Employment and Wages [data](https://www.bls.gov/cew/downloadable-data-files.htm), and the 2018 Annual Social and Economic Supplement to the [Current Population Survey](https://thedataweb.rm.census.gov/ftp/cps_ftp.html#cpsmarch).
 
-### Table 2. Estimated new UI claims and EPHI losses for six weeks during March 15 - April 25, by state
+### Table 2. Estimated new UI claims and employer-provided health insurance losses between March 15 and April 25, by state
 ```{r}
 ephi_state %>% 
   datatable(
