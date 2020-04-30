@@ -10,29 +10,16 @@ state_total_ic <- read_csv("ar539.csv") %>%
   ) %>% 
   filter(endweek >= mdy("03-14-20"))
 
-# add new data for week ending 04-11-20
-state_total_ic <- read_csv("state_ic_0411.csv") %>% 
+# add new data for week ending 04-25-20
+state_total_ic <- read_csv("state_ic_0425.csv") %>% 
   inner_join(state_names, by = "statename") %>% 
   select(stateabb, ic_headline) %>% 
-  mutate(endweek = ymd("2020-04-11")) %>% 
+  mutate(endweek = ymd("2020-04-25")) %>% 
   bind_rows(state_total_ic)
 
 # process UI data by industry
 # use semi-consistent data from
 # https://raw.githubusercontent.com/Economic/ui_state_detailed/master/output/state_ui_industry_recoded.csv
-# first limit UI industry data to usable states
-# in this case 2-digit naics reporters
-# AL - complete
-# KS - complete but no utilities
-# MA - complete
-# ME - missing 3/14, and mining + utilities
-# MI - complete
-# ND - complete
-# NE - missing 3/14, but complete
-# NV - missing 3/14, but complete
-# NY - complete but combines construction + utilities
-# OR - complete
-# WA - complete
 # WY - mixture of 2digit and high level <- drop this
 state_ui_industry <- read_csv("state_ui_industry_recoded.csv") %>%
   # begin at week ending 3/14
@@ -58,10 +45,10 @@ shocks <- state_ui_industry %>%
     sector = sector,
     basis_shock_industry = ic / emp
   )
-# now define 04-11 shock = 04-04 shock
+# now define 04-25 shock = 04-18 shock
 shocks <- shocks %>% 
-  filter(endweek == ymd("2020-04-04")) %>% 
-  mutate(endweek = ymd("2020-04-11")) %>% 
+  filter(endweek == ymd("2020-04-18")) %>% 
+  mutate(endweek = ymd("2020-04-25")) %>% 
   bind_rows(shocks)
 
 # NY doesn't separate construction & utilities

@@ -1,7 +1,7 @@
 ---
-title: "X.X million workers likely lost their employer-provided health insurance in the past 4 weeks"
+title: "X.X million workers likely lost their employer-provided health insurance in the past 6 weeks"
 author: "Josh Bivens and Ben Zipperer"
-date: "4/16/2020"
+date: "4/29/2020"
 output:
   html_document:
     theme: flatly
@@ -38,10 +38,11 @@ ephi_state <- read_csv("ephi_state.csv") %>%
 
 ## Tables
 
-### Table 1: New UI claims and EPHI losses for the four weeks ending March 21 through April 11, by industry
+### Table 1: New UI claims and EPHI losses for the six weeks during March 15 - April 25, by industry
 ```{r us_claims}
 datatable(
   ephi_industry,
+  elementId = "ephi-losses-industry",
   rownames = FALSE, 
   extensions = 'Buttons',
   options = list(
@@ -61,12 +62,13 @@ datatable(
   target = 'row',
   backgroundColor = styleEqual("All industries", 'gray'))
 ```
-Source: Authors' analysis of state-level [UI claims]([https://economic.github.io/ui_state_detailed/]), US Department of Labor [UI Claims](https://www.dol.gov/ui/data.pdf), Quarterly Census of Employment and Wages [data](https://www.bls.gov/cew/downloadable-data-files.htm), and the 2018 Annual Social and Economic Supplement to the [Current Population Survey](https://thedataweb.rm.census.gov/ftp/cps_ftp.html#cpsmarch).
+Source: Authors' analysis of state-level [UI claims](https://economic.github.io/ui_state_detailed/), US Department of Labor [UI Claims](https://www.dol.gov/ui/data.pdf), Quarterly Census of Employment and Wages [data](https://www.bls.gov/cew/downloadable-data-files.htm), and the 2018 Annual Social and Economic Supplement to the [Current Population Survey](https://thedataweb.rm.census.gov/ftp/cps_ftp.html#cpsmarch).
 
-### Table 2. Estimated new UI claims and EPHI losses for the weeks ending March 21 through April 11, by state
+### Table 2. Estimated new UI claims and EPHI losses for six weeks during March 15 - April 25, by state
 ```{r}
 ephi_state %>% 
   datatable(
+    elementId = "ephi-losses-state",
     rownames = FALSE, 
     extensions = 'Buttons',
     options = list(
@@ -82,4 +84,4 @@ ephi_state %>%
     )
   )
 ```
-Source: Authors' analysis of state-level [UI claims]([https://economic.github.io/ui_state_detailed/]), US Department of Labor [UI Claims](https://www.dol.gov/ui/data.pdf), Quarterly Census of Employment and Wages [data](https://www.bls.gov/cew/downloadable-data-files.htm), and the 2018 Annual Social and Economic Supplement to the [Current Population Survey](https://thedataweb.rm.census.gov/ftp/cps_ftp.html#cpsmarch).
+Source: Authors' analysis of state-level [UI claims](https://economic.github.io/ui_state_detailed/), US Department of Labor [UI Claims](https://www.dol.gov/ui/data.pdf), Quarterly Census of Employment and Wages [data](https://www.bls.gov/cew/downloadable-data-files.htm), and the 2018 Annual Social and Economic Supplement to the [Current Population Survey](https://thedataweb.rm.census.gov/ftp/cps_ftp.html#cpsmarch).
