@@ -11,7 +11,7 @@ source("create_misc_data.R")
 
 # inputs: 
 #ar539.csv
-#state_ic_0411.csv
+#state_ic_0509.csv
 #state_ui_industry_recoded.csv
 source("create_ic_industry.R")
 

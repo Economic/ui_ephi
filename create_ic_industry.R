@@ -10,12 +10,29 @@ state_total_ic <- read_csv("ar539.csv") %>%
   ) %>% 
   filter(endweek >= mdy("03-14-20"))
 
-# add new data for week ending 04-25-20
-state_total_ic <- read_csv("state_ic_0425.csv") %>% 
+
+# process new data and add in PUA claims
+pua_claims <- read_csv("initialclaims_PUAclaims_may14.csv") %>% 
+  select(statename = STATE, pua_ic0502 = may2_pua_claims, pua_ic0509 = may9_pua_claims) %>% 
+  pivot_longer(-statename, names_to = "endweek", names_prefix = "pua_ic", values_to = "pua_ic") %>% 
+  mutate(month = str_sub(endweek,1,2), day = str_sub(endweek,3,4)) %>% 
+  mutate(endweek = mdy(paste(month, day, "2020", sep = "-"))) %>% 
   inner_join(state_names, by = "statename") %>% 
-  select(stateabb, ic_headline) %>% 
-  mutate(endweek = ymd("2020-04-25")) %>% 
-  bind_rows(state_total_ic)
+  select(stateabb, endweek, pua_ic)
+
+new_ic <- read_csv("initialclaims_PUAclaims_may14.csv") %>% 
+  select(statename = STATE, ic_headline = may9_advance) %>% 
+  mutate(endweek = ymd("2020-05-09")) %>% 
+  inner_join(state_names, by = "statename") %>% 
+  select(stateabb, endweek, ic_headline)
+
+# add new data for week ending 05-09-20
+state_total_ic <- state_total_ic %>% 
+  bind_rows(new_ic) %>% 
+  left_join(pua_claims) %>% 
+  mutate(pua_ic = ifelse(is.na(pua_ic), 0, pua_ic)) %>% 
+  mutate(ic_headline = ic_headline + pua_ic) %>% 
+  select(stateabb, endweek, ic_headline)
 
 # process UI data by industry
 # use semi-consistent data from
@@ -25,7 +42,11 @@ state_ui_industry <- read_csv("state_ui_industry_recoded.csv") %>%
   # begin at week ending 3/14
   filter(endweek >= ymd("2020-03-14")) %>% 
   # drop Wyoming because of non 2digit coding
-  filter(stateabb != "WY")
+  filter(stateabb != "WY") %>% 
+  # drop CA because of complicated coding and only available through 4/25
+  filter(stateabb != "CA") %>% 
+  # drop CO & NM because not available through 5/2
+  filter(stateabb != "CO" & stateabb != "NM")
 
 # grab sector names
 sectornames <- state_ui_industry %>% 
@@ -45,10 +66,11 @@ shocks <- state_ui_industry %>%
     sector = sector,
     basis_shock_industry = ic / emp
   )
-# now define 04-25 shock = 04-18 shock
+
+# now define 05-09 shock = 05-02 shock
 shocks <- shocks %>% 
-  filter(endweek == ymd("2020-04-18")) %>% 
-  mutate(endweek = ymd("2020-04-25")) %>% 
+  filter(endweek == ymd("2020-05-02")) %>% 
+  mutate(endweek = ymd("2020-05-09")) %>% 
   bind_rows(shocks)
 
 # NY doesn't separate construction & utilities

@@ -1,7 +1,7 @@
 ---
-title: "X.X million workers likely lost their employer-provided health insurance in the past 6 weeks"
+title: "X.X million workers likely lost their employer-provided health insurance in the past 8 weeks"
 author: "Josh Bivens and Ben Zipperer"
-date: "4/29/2020"
+date: "5/14/2020"
 output:
   html_document:
     theme: flatly
@@ -38,7 +38,7 @@ ephi_state <- read_csv("ephi_state.csv") %>%
 
 ## Tables
 
-### Table 1: New UI claims and employer-provided health insurance losses between March 15 and April 25, by industry
+### Table 1: New UI claims and employer-provided health insurance losses between March 15 and May 9, by industry
 ```{r us_claims}
 datatable(
   ephi_industry,
@@ -64,7 +64,7 @@ datatable(
 ```
 Source: Authors' analysis of state-level [UI claims](https://economic.github.io/ui_state_detailed/), US Department of Labor [UI Claims](https://www.dol.gov/ui/data.pdf), Quarterly Census of Employment and Wages [data](https://www.bls.gov/cew/downloadable-data-files.htm), and the 2018 Annual Social and Economic Supplement to the [Current Population Survey](https://thedataweb.rm.census.gov/ftp/cps_ftp.html#cpsmarch).
 
-### Table 2. Estimated new UI claims and employer-provided health insurance losses between March 15 and April 25, by state
+### Table 2. Estimated new UI claims and employer-provided health insurance losses between March 15 and May 9, by state
 ```{r}
 ephi_state %>% 
   datatable(
