@@ -11,6 +11,8 @@ predictions <- state_industry_predictions %>%
   summarize(ic = sum(ic), emp = first(emp)) %>% 
   ungroup()
 
+
+
 # Table 1. National industry-specific and overall changes
 ephi_industry_pt1 <- predictions %>% 
   group_by(sector) %>% 

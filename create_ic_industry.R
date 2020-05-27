@@ -12,26 +12,26 @@ state_total_ic <- read_csv("ar539.csv") %>%
 
 
 # process new data and add in PUA claims
-pua_claims <- read_csv("initialclaims_PUAclaims_may14.csv") %>% 
-  select(statename = STATE, pua_ic0502 = may2_pua_claims, pua_ic0509 = may9_pua_claims) %>% 
-  pivot_longer(-statename, names_to = "endweek", names_prefix = "pua_ic", values_to = "pua_ic") %>% 
-  mutate(month = str_sub(endweek,1,2), day = str_sub(endweek,3,4)) %>% 
-  mutate(endweek = mdy(paste(month, day, "2020", sep = "-"))) %>% 
-  inner_join(state_names, by = "statename") %>% 
-  select(stateabb, endweek, pua_ic)
+# pua_claims <- read_csv("initialclaims_PUAclaims_may14.csv") %>% 
+#   select(statename = STATE, pua_ic0502 = may2_pua_claims, pua_ic0509 = may9_pua_claims) %>% 
+#   pivot_longer(-statename, names_to = "endweek", names_prefix = "pua_ic", values_to = "pua_ic") %>% 
+#   mutate(month = str_sub(endweek,1,2), day = str_sub(endweek,3,4)) %>% 
+#   mutate(endweek = mdy(paste(month, day, "2020", sep = "-"))) %>% 
+#   inner_join(state_names, by = "statename") %>% 
+#   select(stateabb, endweek, pua_ic)
 
 new_ic <- read_csv("initialclaims_PUAclaims_may14.csv") %>% 
   select(statename = STATE, ic_headline = may9_advance) %>% 
-  mutate(endweek = ymd("2020-05-09")) %>% 
+  mutate(endweek = ymd("2020-05-23")) %>% 
   inner_join(state_names, by = "statename") %>% 
   select(stateabb, endweek, ic_headline)
 
-# add new data for week ending 05-09-20
+# add new data for week ending 05-23-20
 state_total_ic <- state_total_ic %>% 
   bind_rows(new_ic) %>% 
-  left_join(pua_claims) %>% 
-  mutate(pua_ic = ifelse(is.na(pua_ic), 0, pua_ic)) %>% 
-  mutate(ic_headline = ic_headline + pua_ic) %>% 
+#  left_join(pua_claims) %>% 
+#  mutate(pua_ic = ifelse(is.na(pua_ic), 0, pua_ic)) %>% 
+#  mutate(ic_headline = ic_headline + pua_ic) %>% 
   select(stateabb, endweek, ic_headline)
 
 # process UI data by industry
@@ -41,12 +41,12 @@ state_total_ic <- state_total_ic %>%
 state_ui_industry <- read_csv("state_ui_industry_recoded.csv") %>%
   # begin at week ending 3/14
   filter(endweek >= ymd("2020-03-14")) %>% 
+  # end at week ending 5/2 because we have not collected balanced panel since then
+  filter(endweek <= ymd("2020-05-02")) %>% 
   # drop Wyoming because of non 2digit coding
   filter(stateabb != "WY") %>% 
-  # drop CA because of complicated coding and only available through 4/25
-  filter(stateabb != "CA") %>% 
-  # drop CO & NM because not available through 5/2
-  filter(stateabb != "CO" & stateabb != "NM")
+  # drop NM because not available through 5/2
+  filter(stateabb != "NM")
 
 # grab sector names
 sectornames <- state_ui_industry %>% 
@@ -67,11 +67,21 @@ shocks <- state_ui_industry %>%
     basis_shock_industry = ic / emp
   )
 
-# now define 05-09 shock = 05-02 shock
+# now define 05-09 through 05-23 shocks = 05-02 shock
+shocks_0502 <- shocks %>% 
+  filter(endweek == ymd("2020-05-02"))
+
+shocks_0509 <- shocks_0502 %>% 
+  mutate(endweek = ymd("2020-05-09")) 
+
+shocks_0516 <- shocks_0502 %>% 
+  mutate(endweek = ymd("2020-05-16"))   
+
+shocks_0523 <- shocks_0502 %>% 
+  mutate(endweek = ymd("2020-05-23")) 
+
 shocks <- shocks %>% 
-  filter(endweek == ymd("2020-05-02")) %>% 
-  mutate(endweek = ymd("2020-05-09")) %>% 
-  bind_rows(shocks)
+  bind_rows(shocks_0509, shocks_0516, shocks_0523)
 
 # NY doesn't separate construction & utilities
 # allocate NY claims between these sectors using allocation in other states

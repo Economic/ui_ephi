@@ -10,9 +10,9 @@ library(tigris)
 source("create_misc_data.R")
 
 # inputs: 
-#ar539.csv
+#ar539.csv from https://oui.doleta.gov/unemploy/csv/ar539.csv
 #state_ic_0509.csv
-#state_ui_industry_recoded.csv
+#state_ui_industry_recoded.csv from ui_state_detailed project
 source("create_ic_industry.R")
 
 source("analyze_ephi.R")
