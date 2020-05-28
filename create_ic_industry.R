@@ -20,8 +20,9 @@ state_total_ic <- read_csv("ar539.csv") %>%
 #   inner_join(state_names, by = "statename") %>% 
 #   select(stateabb, endweek, pua_ic)
 
-new_ic <- read_csv("initialclaims_PUAclaims_may14.csv") %>% 
-  select(statename = STATE, ic_headline = may9_advance) %>% 
+# MODIFY THIS PART WITH NEW DATA
+new_ic <- read_csv("initialclaims_PUAclaims_may28.csv") %>% 
+  select(statename = STATE, ic_headline = initialclaims_may23) %>% 
   mutate(endweek = ymd("2020-05-23")) %>% 
   inner_join(state_names, by = "statename") %>% 
   select(stateabb, endweek, ic_headline)
